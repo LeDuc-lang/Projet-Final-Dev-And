@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Alert, ScrollView, TouchableOpacity } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { TamaguiProvider, Text, View, YStack } from 'tamagui'
 import DreamInputs, { SleepQuality, Tone } from '../../components/DreamInputs.native'
 import config from '../../tamagi.config'
@@ -33,8 +34,18 @@ export default function App() {
       meaning,
       tone,
     }
-    console.log('DreamEntry:', entry)
-    Alert.alert('Enregistré', 'Entrée de rêve enregistrée dans la console')
+    try {
+      AsyncStorage.getItem('@dreams:entries').then((res) => {
+        const existing = res ? JSON.parse(res) : []
+        const next = [entry, ...existing]
+        AsyncStorage.setItem('@dreams:entries', JSON.stringify(next))
+      })
+      console.log('DreamEntry:', entry)
+      Alert.alert('Enregistré', 'Entrée de rêve enregistrée')
+    } catch (e) {
+      console.error(e)
+      Alert.alert('Erreur', 'Impossible de sauvegarder')
+    }
   }
 
   return (

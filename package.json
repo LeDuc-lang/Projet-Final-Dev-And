@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^3.0.1",
     "@react-navigation/native": "^7.1.28",
     "@rehookify/datepicker": "^6.6.8",
     "@tamagui/form": "^2.0.0-rc.22",
