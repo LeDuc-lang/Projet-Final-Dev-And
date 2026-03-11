@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { Alert, ScrollView, TouchableOpacity } from 'react-native'
-import { TamaguiProvider, Text, YStack } from 'tamagui'
+import { Alert } from 'react-native'
+import { TamaguiProvider, Text, YStack, ScrollView, Button, H2 } from 'tamagui'
 import DreamInputs, { SleepQuality, Tone } from '../../components/DreamInputs.native'
 import config from '../../tamagi.config'
 
@@ -20,13 +20,13 @@ export default function App() {
   const [meaning, setMeaning] = useState<string>('')
   const [tone, setTone] = useState<Tone>('neutre')
   const [editingId, setEditingId] = useState<number | null>(null)
+  
   const router = useRouter()
   const params = useLocalSearchParams()
   const editId = (params as { editId?: string }).editId
 
   useEffect(() => {
     if (!editId) return
-    // avoid re-loading if already editing the same id
     if (editingId && String(editingId) === String(editId)) return
 
     let mounted = true
@@ -83,14 +83,11 @@ export default function App() {
         const existing = raw ? JSON.parse(raw) : []
         let next
         if (editingId) {
-          // find by id string equality to be robust
           const idx = existing.findIndex((e: any) => String(e.id) === String(editingId))
           if (idx !== -1) {
-            // replace in place
             existing[idx] = { ...existing[idx], ...base, id: editingId }
             next = existing
           } else {
-            // if not found, prepend updated entry with same id
             next = [{ id: editingId, ...base }, ...existing]
           }
         } else {
@@ -100,20 +97,12 @@ export default function App() {
         await AsyncStorage.setItem('@dreams:entries', JSON.stringify(next))
         Alert.alert('Enregistré', editingId ? 'Rêve modifié' : 'Entrée de rêve enregistrée')
         setEditingId(null)
-        // clear form
-        setDate(null)
-        setType('ordinaire')
-        setBefore(5)
-        setAfter(5)
-        setCharacters([])
-        setPlace('')
-        setIntensity(5)
-        setClarity(5)
-        setTags([])
-        setSleepQuality('moyenne')
-        setMeaning('')
-        setTone('neutre')
-        // remove editId param if any
+        
+        // Reset form
+        setDate(null); setType('ordinaire'); setBefore(5); setAfter(5)
+        setCharacters([]); setPlace(''); setIntensity(5); setClarity(5)
+        setTags([]); setSleepQuality('moyenne'); setMeaning(''); setTone('neutre')
+        
         try { router.replace('/') } catch (e) { /* ignore */ }
       } catch (e) {
         console.error(e)
@@ -124,28 +113,45 @@ export default function App() {
 
   return (
     <TamaguiProvider config={config} defaultTheme="light">
-      <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }}>
-        <Text fontSize="$8" fontWeight="bold" marginBottom="$3">Journal de rêve</Text>
-        <ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
-          <YStack width={400} maxWidth="100%">
-            <DreamInputs.DateTimeField label="Date et Heure" value={date} onChange={setDate} />
-            <DreamInputs.TypeSelect label="Type de rêve" options={["cauchemar","lucide","ordinaire"]} value={type} onChange={setType} />
-            <DreamInputs.EmotionStepper label="État émotionnel Avant" value={before} onChange={setBefore} />
-            <DreamInputs.EmotionStepper label="État émotionnel Après" value={after} onChange={setAfter} />
-            <DreamInputs.TagInput label="Personnages présents" tags={characters} onChange={setCharacters} />
-            <DreamInputs.TextArea label="Lieu du rêve" value={place} onChange={setPlace} placeholder="Décrire le lieu" />
-            <DreamInputs.EmotionStepper label="Intensité émotionnelle" value={intensity} onChange={setIntensity} min={0} max={10} />
-            <DreamInputs.EmotionStepper label="Clarté du rêve" value={clarity} onChange={setClarity} min={0} max={10} />
-            <DreamInputs.TagInput label="Tags" tags={tags} onChange={setTags} />
-            <DreamInputs.TypeSelect label="Qualité du sommeil" options={["excellente","bonne","moyenne","pauvre"]} value={sleepQuality} onChange={setSleepQuality as any} />
-            <DreamInputs.TextArea label="Signification personnelle" value={meaning} onChange={setMeaning} placeholder="Ce que ce rêve signifie pour vous" />
-            <DreamInputs.ToneSelector label="Tonalité globale" value={tone} onChange={setTone} />
+      {/* Utilisation du ScrollView de Tamagui avec un background qui s'adapte au thème */}
+      <ScrollView 
+        backgroundColor="$background" 
+        contentContainerStyle={{ flexGrow: 1, padding: '$4', alignItems: 'center' }}
+      >
+        <YStack 
+          width="100%" 
+          maxWidth={600} // Évite que le formulaire soit trop large sur iPad/Web
+          space="$4"     // C'est la magie de Tamagui : gère l'espacement entre tous les enfants !
+          paddingBottom="$8"
+        >
+          <H2 alignSelf="center" marginBottom="$2">
+            Journal de rêve
+          </H2>
 
-            <TouchableOpacity onPress={handleSubmit} style={{ backgroundColor: '#007AFF', padding: 12, borderRadius: 8, marginTop: 12, alignItems: 'center' }}>
-              <Text color="#fff">Enregistrer</Text>
-            </TouchableOpacity>
-          </YStack>
-        </ScrollView>
+          <DreamInputs.DateTimeField label="Date et Heure" value={date} onChange={setDate} />
+          <DreamInputs.TypeSelect label="Type de rêve" options={["cauchemar","lucide","ordinaire"]} value={type} onChange={setType} />
+          <DreamInputs.EmotionStepper label="État émotionnel Avant" value={before} onChange={setBefore} />
+          <DreamInputs.EmotionStepper label="État émotionnel Après" value={after} onChange={setAfter} />
+          <DreamInputs.TagInput label="Personnages présents" tags={characters} onChange={setCharacters} />
+          <DreamInputs.TextArea label="Lieu du rêve" value={place} onChange={setPlace} placeholder="Décrire le lieu" />
+          <DreamInputs.EmotionStepper label="Intensité émotionnelle" value={intensity} onChange={setIntensity} min={0} max={10} />
+          <DreamInputs.EmotionStepper label="Clarté du rêve" value={clarity} onChange={setClarity} min={0} max={10} />
+          <DreamInputs.TagInput label="Tags" tags={tags} onChange={setTags} />
+          <DreamInputs.TypeSelect label="Qualité du sommeil" options={["excellente","bonne","moyenne","pauvre"]} value={sleepQuality} onChange={setSleepQuality as any} />
+          <DreamInputs.TextArea label="Signification personnelle" value={meaning} onChange={setMeaning} placeholder="Ce que ce rêve signifie pour vous" />
+          <DreamInputs.ToneSelector label="Tonalité globale" value={tone} onChange={setTone} />
+
+          {/* Remplacement du TouchableOpacity par un Button Tamagui */}
+          <Button 
+            size="$5" 
+            theme="active" 
+            marginTop="$4" 
+            borderRadius="$8"
+            onPress={handleSubmit}
+          >
+            {editingId ? 'Modifier le rêve' : 'Enregistrer'}
+          </Button>
+        </YStack>
       </ScrollView>
     </TamaguiProvider>
   )
