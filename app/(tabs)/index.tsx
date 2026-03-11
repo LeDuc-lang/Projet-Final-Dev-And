@@ -1,31 +1,67 @@
-import { StyleSheet } from 'react-native';
+import { useState } from 'react'
+import { Alert, ScrollView, TouchableOpacity } from 'react-native'
+import { TamaguiProvider, Text, View, YStack } from 'tamagui'
+import DreamInputs, { SleepQuality, Tone } from '../../components/DreamInputs.native'
+import config from '../../tamagi.config'
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function App() {
+  const [date, setDate] = useState<Date | null>(null)
+  const [type, setType] = useState<string>('ordinaire')
+  const [before, setBefore] = useState<number>(5)
+  const [after, setAfter] = useState<number>(5)
+  const [characters, setCharacters] = useState<string[]>([])
+  const [place, setPlace] = useState<string>('')
+  const [intensity, setIntensity] = useState<number>(5)
+  const [clarity, setClarity] = useState<number>(5)
+  const [tags, setTags] = useState<string[]>([])
+  const [sleepQuality, setSleepQuality] = useState<SleepQuality>('moyenne')
+  const [meaning, setMeaning] = useState<string>('')
+  const [tone, setTone] = useState<Tone>('neutre')
 
-export default function TabOneScreen() {
+  const handleSubmit = () => {
+    const entry = {
+      date,
+      type,
+      emotionBefore: before,
+      emotionAfter: after,
+      characters,
+      place,
+      intensity,
+      clarity,
+      tags,
+      sleepQuality,
+      meaning,
+      tone,
+    }
+    console.log('DreamEntry:', entry)
+    Alert.alert('Enregistré', 'Entrée de rêve enregistrée dans la console')
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
-  );
-}
+    <TamaguiProvider config={config} defaultTheme="light">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }}>
+        <Text fontSize="$8" fontWeight="bold" marginBottom="$3">Journal de rêve</Text>
+        <ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
+          <YStack width={400} maxWidth="100%">
+            <DreamInputs.DateTimeField label="Date et Heure" value={date} onChange={setDate} />
+            <DreamInputs.TypeSelect label="Type de rêve" options={["cauchemar","lucide","ordinaire"]} value={type} onChange={setType} />
+            <DreamInputs.EmotionStepper label="État émotionnel Avant" value={before} onChange={setBefore} />
+            <DreamInputs.EmotionStepper label="État émotionnel Après" value={after} onChange={setAfter} />
+            <DreamInputs.TagInput label="Personnages présents" tags={characters} onChange={setCharacters} />
+            <DreamInputs.TextArea label="Lieu du rêve" value={place} onChange={setPlace} placeholder="Décrire le lieu" />
+            <DreamInputs.EmotionStepper label="Intensité émotionnelle" value={intensity} onChange={setIntensity} min={0} max={10} />
+            <DreamInputs.EmotionStepper label="Clarté du rêve" value={clarity} onChange={setClarity} min={0} max={10} />
+            <DreamInputs.TagInput label="Tags" tags={tags} onChange={setTags} />
+            <DreamInputs.TypeSelect label="Qualité du sommeil" options={["excellente","bonne","moyenne","pauvre"]} value={sleepQuality} onChange={setSleepQuality as any} />
+            <DreamInputs.TextArea label="Signification personnelle" value={meaning} onChange={setMeaning} placeholder="Ce que ce rêve signifie pour vous" />
+            <DreamInputs.ToneSelector label="Tonalité globale" value={tone} onChange={setTone} />
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+            <TouchableOpacity onPress={handleSubmit} style={{ backgroundColor: '#007AFF', padding: 12, borderRadius: 8, marginTop: 12, alignItems: 'center' }}>
+              <Text color="#fff">Enregistrer</Text>
+            </TouchableOpacity>
+          </YStack>
+        </ScrollView>
+      </ScrollView>
+    </TamaguiProvider>
+  )
+}
