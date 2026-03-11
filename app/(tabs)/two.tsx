@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl, View as RNView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -11,6 +12,7 @@ type StoredEntry = any
 export default function TabTwoScreen() {
   const [entries, setEntries] = useState<StoredEntry[]>([])
   const [refreshing, setRefreshing] = useState(false)
+  const router = useRouter()
 
   const load = useCallback(async () => {
     try {
@@ -34,6 +36,25 @@ export default function TabTwoScreen() {
     setRefreshing(false)
   }, [load])
 
+  async function deleteEntry(id: number) {
+  try {
+    const raw = await AsyncStorage.getItem('@dreams:entries')
+    const parsed = raw ? JSON.parse(raw) : []
+
+    const next = parsed.filter((e: any) => e.id !== id)
+
+    await AsyncStorage.setItem('@dreams:entries', JSON.stringify(next))
+    setEntries(next)
+
+  } catch (e) {
+    console.error(e)
+  }
+}
+  function editEntry(id: number) {
+    // navigate to index with editId param
+    router.push(`/?editId=${id}`)
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Entrées de rêves</Text>
@@ -47,6 +68,14 @@ export default function TabTwoScreen() {
             <Text style={styles.itemTitle}>{item.type ?? '—'} — {item.tone ?? '—'}</Text>
             <Text>{item.date ? new Date(item.date).toLocaleString() : 'Date non renseignée'}</Text>
             <Text numberOfLines={2}>{item.meaning ?? ''}</Text>
+            <RNView style={{ flexDirection: 'row', marginTop: 8 }}>
+              <TouchableOpacity onPress={() => editEntry(item.id)} style={{ marginRight: 12 }}>
+                <Text style={{ color: '#007AFF' }}>Modifier</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => deleteEntry(item.id)}>
+                <Text style={{ color: '#FF3B30' }}>Supprimer</Text>
+              </TouchableOpacity>
+            </RNView>
           </View>
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
