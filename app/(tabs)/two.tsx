@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { FlatList, RefreshControl, View as RNView, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { FlatList, RefreshControl, View as RNView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -11,6 +11,10 @@ type StoredEntry = any
 
 export default function TabTwoScreen() {
   const [entries, setEntries] = useState<StoredEntry[]>([])
+  const [query, setQuery] = useState('')
+  const [selectedType, setSelectedType] = useState<string | null>(null)
+  const [selectedTone, setSelectedTone] = useState<string | null>(null)
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
   const router = useRouter()
 
@@ -37,32 +41,55 @@ export default function TabTwoScreen() {
   }, [load])
 
   async function deleteEntry(id: number) {
-  try {
-    const raw = await AsyncStorage.getItem('@dreams:entries')
-    const parsed = raw ? JSON.parse(raw) : []
+    try {
+      const raw = await AsyncStorage.getItem('@dreams:entries')
+      const parsed = raw ? JSON.parse(raw) : []
 
-    const next = parsed.filter((e: any) => e.id !== id)
+      const next = parsed.filter((e: any) => e.id !== id)
 
-    await AsyncStorage.setItem('@dreams:entries', JSON.stringify(next))
-    setEntries(next)
+      await AsyncStorage.setItem('@dreams:entries', JSON.stringify(next))
+      setEntries(next)
 
-  } catch (e) {
-    console.error(e)
+    } catch (e) {
+      console.error(e)
+    }
   }
-}
   function editEntry(id: number) {
     // navigate to index with editId param
     router.push(`/?editId=${id}`)
   }
 
+  // Prépare les options si besoin plus tard (garde la logique)
+  const types = useMemo(() => Array.from(new Set(entries.map(e => e.type).filter(Boolean))), [entries])
+  const tones = useMemo(() => Array.from(new Set(entries.map(e => e.tone).filter(Boolean))), [entries])
+  const characters = useMemo(() => Array.from(new Set(entries.flatMap(e => e.characters ?? []).filter(Boolean))), [entries])
+
+  const filteredEntries = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return entries.filter(e => {
+      if (selectedType && e.type !== selectedType) return false
+      if (selectedTone && e.tone !== selectedTone) return false
+      if (selectedCharacter && !(e.characters ?? []).includes(selectedCharacter)) return false
+      if (!q) return true
+      const hay = `${e.meaning ?? ''} ${e.type ?? ''} ${e.tone ?? ''} ${(e.characters ?? []).join(' ')}`.toLowerCase()
+      return hay.includes(q)
+    })
+  }, [entries, query, selectedType, selectedTone, selectedCharacter])
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Entrées de rêves</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+
+      <TextInput
+        placeholder="Rechercher par mot-clé, type, émotion, personnage..."
+        value={query}
+        onChangeText={setQuery}
+        style={{ padding: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginBottom: 8 }}
+      />
 
       <FlatList
-        data={entries}
-        keyExtractor={(_, idx) => String(idx)}
+        data={filteredEntries}
+        keyExtractor={item => String(item.id ?? item._id ?? Math.random())}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <Text style={styles.itemTitle}>{item.type ?? '—'} — {item.tone ?? '—'}</Text>
@@ -84,7 +111,7 @@ export default function TabTwoScreen() {
 
       <EditScreenInfo path="app/(tabs)/two.tsx" />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({

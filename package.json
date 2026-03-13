@@ -9,7 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^3.0.1",
+    "@expo/ngrok": "^4.1.0",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/native": "^7.1.28",
     "@rehookify/datepicker": "^6.6.8",
     "@tamagui/form": "^2.0.0-rc.22",
@@ -20,7 +21,7 @@
     "expo-constants": "~55.0.7",
     "expo-font": "~55.0.4",
     "expo-linking": "~55.0.7",
-    "expo-router": "~55.0.4",
+    "expo-router": "~55.0.5",
     "expo-splash-screen": "~55.0.10",
     "expo-status-bar": "~55.0.4",
     "expo-symbols": "~55.0.5",
