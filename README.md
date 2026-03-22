@@ -28,23 +28,17 @@ npm install
 
 ```bash
 
-npm run start
+npm run start 
 
 ```
 
 ### Raccourcis utiles
 
-- Android: `npm run android`
-
-- iOS: `npm run ios`
-
-- Web: `npm run web`
-
-Si l'interface ne se met pas a jour correctement, vider le cache Expo:
+Si l'interface ne se met pas a jour correctement, vider le cache Expo et faites un tunnel pour un meilleur fonctionnement (pour le tunnel, n'oubliez de fermer tous les onglets où l app tourne deja sinon cela ne fonctionnera pas et aurez un erreur ngrok):
 
 ```bash
 
-npx expo start -c
+npx expo start -c --tunnel
 
 ```
 
