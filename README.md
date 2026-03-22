@@ -28,7 +28,7 @@ npm install
 
 ```bash
 
-npm run start 
+npm run start
 
 ```
 
@@ -109,10 +109,10 @@ Captures recommandees:
 Une fois les images ajoutees, decommenter/adapter cette section:
 
 - La Dream Liste
-  ![Dream List](docs/screenshots/Screenshot_20260322_211417_Expo%20Go.jpg)
+  ![Dream List](docs/screenshots/dream-list.png)
 
 - Le formulaire
-  ![Formulaire](docs/screenshots/Screenshot_20260322_211409_Expo%20Go.jpg)
+  ![Formulaire](docs/screenshots/dream-form.png)
 
 ## 5) Nettoyage effectue
 
