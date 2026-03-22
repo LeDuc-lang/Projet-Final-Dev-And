@@ -24,9 +24,9 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <SymbolView
               name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
+                ios: 'cloud.fill',
+                android: 'cloud',
+                web: 'cloud',
               }}
               tintColor={color}
               size={28}
@@ -35,15 +35,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="Dreams_list"
         options={{
           title: 'My Dreams List',
           tabBarIcon: ({ color }) => (
             <SymbolView
               name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
+                ios: 'checklist',
+                android: 'checklist',
+                web: 'checklist',
               }}
               tintColor={color}
               size={28}
