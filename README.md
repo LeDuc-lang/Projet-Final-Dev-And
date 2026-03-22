@@ -1,22 +1,12 @@
 je fais un globe numérique a la cyber avec une barre de recherche et une animation a ma sauce donc je peux faire un espèce de mini google mais plutot sur des trucs spécifiques donc des infos sur les pays pour commencer.
 
-
-
-
 ---
-
 
 # Projet Final - Journal de Reves
 
-  
-
 Application mobile (Expo + React Native) permettant d'enregistrer, modifier et consulter des entrees de reve.
 
-  
-
 ## 1) Lancer l'application
-
-  
 
 ### Prerequis
 
@@ -26,8 +16,6 @@ Application mobile (Expo + React Native) permettant d'enregistrer, modifier et c
 
 - Expo Go (Android/iOS) ou emulateur
 
-  
-
 ### Installation
 
 ```bash
@@ -35,8 +23,6 @@ Application mobile (Expo + React Native) permettant d'enregistrer, modifier et c
 npm install
 
 ```
-
-  
 
 ### Demarrage
 
@@ -46,8 +32,6 @@ npm run start
 
 ```
 
-  
-
 ### Raccourcis utiles
 
 - Android: `npm run android`
@@ -55,8 +39,6 @@ npm run start
 - iOS: `npm run ios`
 
 - Web: `npm run web`
-
-  
 
 Si l'interface ne se met pas a jour correctement, vider le cache Expo:
 
@@ -66,11 +48,7 @@ npx expo start -c
 
 ```
 
-  
-
 ## 2) Structure du projet et architecture
-
-  
 
 ### Structure principale
 
@@ -86,8 +64,6 @@ npx expo start -c
 
 - `assets/`: polices et icones
 
-  
-
 ### Architecture (vue simple)
 
 - **Presentation**: ecrans dans `app/` et composants UI dans `components/`
@@ -98,11 +74,7 @@ npx expo start -c
 
 - **Navigation**: Expo Router avec onglets + route dynamique d'edition via parametre `editId`
 
-  
-
 ## 3) Choix de conception et fonctionnalites implementees
-
-  
 
 ### Choix de conception
 
@@ -113,8 +85,6 @@ npx expo start -c
 - Ecran liste separe de l'ecran saisie pour une meilleure lisibilite
 
 - Theme visuel volontairement contraste (hero sombre + blocs formulaire clairs)
-
-  
 
 ### Fonctionnalites implementees
 
@@ -130,15 +100,9 @@ npx expo start -c
 
 - Rafraichissement manuel de la liste (pull-to-refresh)
 
-  
-
 ## 4) Captures d'ecran
 
-  
-
 Les captures sont a placer dans: `docs/screenshots/`
-
-  
 
 Captures recommandees:
 
@@ -148,22 +112,14 @@ Captures recommandees:
 
 3. `dream-edit.png` - mode edition d'une entree
 
-  
-
 Une fois les images ajoutees, decommenter/adapter cette section:
 
-  
-
 - La Dream Liste
-![Dream List](docs/screenshots/Screenshot_20260322_211417_Expo%20Go.jpg)
-
+  ![Dream List](docs/screenshots/Screenshot_20260322_211417_Expo%20Go.jpg)
 
 - Le formulaire
-![Formulaire](docs/screenshots/Screenshot_20260322_211409_Expo%20Go.jpg)
-  
+  ![Formulaire](docs/screenshots/Screenshot_20260322_211409_Expo%20Go.jpg)
 
 ## 5) Nettoyage effectue
-
-  
 
 Les fichiers template Expo non utilises par le projet ont ete retires pour simplifier la base de code.
