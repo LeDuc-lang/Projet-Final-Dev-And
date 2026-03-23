@@ -1,7 +1,3 @@
-je fais un globe numérique a la cyber avec une barre de recherche et une animation a ma sauce donc je peux faire un espèce de mini google mais plutot sur des trucs spécifiques donc des infos sur les pays pour commencer.
-
----
-
 # Projet Final - Journal de Reves
 
 Application mobile (Expo + React Native) permettant d'enregistrer, modifier et consulter des entrees de reve.
